@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { store } from "./store";
 import { Provider } from "react-redux";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { ThemeProvider as ThemeMuiProvider, createTheme } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 
 const darkTheme = createTheme({
@@ -10,11 +10,11 @@ const darkTheme = createTheme({
   },
 });
 
-export function AppProvider({ children }: { children?: ReactNode }) {
+export function ThemeProvider({ children }: { children?: ReactNode }) {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeMuiProvider theme={darkTheme}>
       <CssBaseline />
       <Provider store={store}>{children}</Provider>
-    </ThemeProvider>
+    </ThemeMuiProvider>
   );
 }

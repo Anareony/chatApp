@@ -1,10 +1,10 @@
 import type { AppProps } from "next/app";
-import { AppProvider } from "./app-provider";
+import { ThemeProvider } from "./theme-provider";
 
 export function App({ Component, pageProps }: AppProps) {
   return (
-    <AppProvider>
+    <ThemeProvider>
       <Component {...pageProps} />
-    </AppProvider>
+    </ThemeProvider>
   );
 }
