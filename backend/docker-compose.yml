@@ -1,16 +1,4 @@
-version: '3.9'
-
 services:
-  backend:
-    container_name: nestapp
-    build:
-      context: .
-      dockerfile: dockerfile
-    ports:
-      - 3001:3001
-    depends_on:
-      - db
-
   db:
     image: postgres:16.2-alpine
     container_name: postgres
@@ -19,10 +7,13 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGERS_DB=postgres
     ports:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
+    env_file:
+      - .env
 
   pgadmin:
     image: dpage/pgadmin4
