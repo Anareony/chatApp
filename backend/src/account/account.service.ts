@@ -10,10 +10,24 @@ export class AccountService {
     return this.db.account.create({
       data: {
         ownerId: userId,
-        isBlockingEnabled: false,
+        avatarUrl: '',
+        name: '',
+        surname: '',
       },
     });
   }
+
+  async createGoogle(userId: number, name: string, surname: string) {
+    return this.db.account.create({
+      data: {
+        ownerId: userId,
+        avatarUrl: '',
+        name: name,
+        surname: surname,
+      },
+    });
+  }
+
   async getAccount(userId: number) {
     return this.db.account.findUniqueOrThrow({ where: { ownerId: userId } });
   }
