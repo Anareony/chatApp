@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 export class AccountDto {
   @ApiProperty()
@@ -9,13 +9,26 @@ export class AccountDto {
   ownerId: number;
 
   @ApiProperty()
-  @IsBoolean()
-  isBlockingEnabled: boolean;
+  @IsOptional()
+  avatarUrl: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  surname: string;
 }
 
 export class PatchAccountDto {
   @ApiProperty()
-  @IsBoolean()
   @IsOptional()
-  isBlockingEnabled: boolean;
+  avatarUrl?: string;
+
+  @IsOptional()
+  @ApiProperty()
+  name?: string;
+
+  @IsOptional()
+  @ApiProperty()
+  surname?: string;
 }

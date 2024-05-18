@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -13,8 +14,9 @@ import { SignInBodyDto, SignUpBodyDto, getSessionInfoDto } from './dto';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { CookieService } from './cookie.service';
-import { AuthGuard } from './auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { SessionInfo } from './session-info.decorator';
+import { GoogleGuard } from './guards/google.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -54,7 +56,7 @@ export class AuthController {
   @Post('sign-out')
   @ApiOkResponse()
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   signOut(@Res({ passthrough: true }) res: Response) {
     this.CookieService.removeToken(res);
   }
@@ -63,8 +65,23 @@ export class AuthController {
   @ApiOkResponse({
     type: getSessionInfoDto,
   })
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   getSessionInfo(@SessionInfo() session: getSessionInfoDto) {
     return session;
+  }
+
+  @Get('google')
+  @UseGuards(GoogleGuard)
+  async googleAuth(@Req() req) {}
+
+  @Get('google/callback')
+  @UseGuards(GoogleGuard)
+  async googleAuthCallback(
+    @Req() req,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken } = await this.authService.googleLogin(req.user);
+    this.CookieService.setToken(res, accessToken);
+    res.redirect('http://localhost:3000');
   }
 }
