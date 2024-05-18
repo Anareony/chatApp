@@ -5,6 +5,8 @@ import { CookieService } from './cookie.service';
 import { PasswordService } from './password.service';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { GoogleGuard } from './guards/google.guard';
 
 @Module({
   imports: [
@@ -16,6 +18,12 @@ import { JwtModule } from '@nestjs/jwt';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, CookieService, PasswordService],
+  providers: [
+    AuthService,
+    CookieService,
+    PasswordService,
+    GoogleStrategy,
+    GoogleGuard,
+  ],
 })
 export class AuthModule {}

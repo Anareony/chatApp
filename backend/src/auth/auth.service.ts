@@ -16,7 +16,7 @@ export class AuthService {
   ) {}
 
   async signUp(email: string, password: string) {
-    const user = await this.UsersService.findByEmail(email);
+    const user = await this.UsersService.findByEmail(email.toLowerCase());
 
     if (user) {
       throw new BadRequestException({ type: 'email-exist' });
@@ -25,7 +25,11 @@ export class AuthService {
     const salt = this.PasswordService.getSalt();
     const hash = this.PasswordService.getHash(password, salt);
 
-    const newUser = await this.UsersService.create(email, hash, salt);
+    const newUser = await this.UsersService.create(
+      email.toLowerCase(),
+      hash,
+      salt,
+    );
 
     const accessToken = await this.JwtService.signAsync({
       id: newUser.id,
@@ -36,7 +40,7 @@ export class AuthService {
   }
 
   async signIn(email: string, password: string) {
-    const user = await this.UsersService.findByEmail(email);
+    const user = await this.UsersService.findByEmail(email.toLowerCase());
 
     if (!user) {
       throw new UnauthorizedException();
@@ -50,7 +54,36 @@ export class AuthService {
 
     const accessToken = await this.JwtService.signAsync({
       id: user.id,
-      email: user.email,
+      email: user.email.toLowerCase(),
+    });
+
+    return { accessToken };
+  }
+
+  async googleLogin(req) {
+    const existedUser = await this.UsersService.findByEmail(
+      req.email.toLowerCase(),
+    );
+
+    if (!existedUser) {
+      const newUser = await this.UsersService.createGoogle(
+        req.email,
+        null,
+        null,
+        req.firstName,
+        req.lastName,
+      );
+      const accessToken = await this.JwtService.signAsync({
+        id: newUser.id,
+        email: newUser.email,
+      });
+
+      return { accessToken };
+    }
+
+    const accessToken = await this.JwtService.signAsync({
+      id: existedUser.id,
+      email: existedUser.email,
     });
 
     return { accessToken };
