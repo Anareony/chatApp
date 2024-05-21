@@ -13,6 +13,7 @@ export class ChatService {
         account: {
           select: {
             name: true,
+            avatarUrl: true,
           },
         },
       },
